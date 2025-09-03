@@ -12,3 +12,5 @@
 ```
 conda env create -f requirements.yml
 ```
+
+Just download the whole folder as .zip and cd into it :)
