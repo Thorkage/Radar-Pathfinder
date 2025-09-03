@@ -21,3 +21,4 @@
 (base) conda activate pathfinder
 ```
 
+and then you are ready to roll :)
