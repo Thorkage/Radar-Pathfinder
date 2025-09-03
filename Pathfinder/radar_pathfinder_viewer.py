@@ -13,6 +13,7 @@ import argparse
 import matplotlib
 matplotlib.use('qt5agg')
 
+# TODO: This is still tailored for UWiBaSS, need to allow to just give a path to a pickle 
 parser = argparse.ArgumentParser()
 parser.add_argument("--directory", type=str, default='..Data/SnowDrone/UWIBASS/', help="Directory in which RADAR data is located")
 parser.add_argument("--datasetID", type=str, default='26_04_2024_5', help="Dataset ID (e.g. 26_04_2024_5)")
