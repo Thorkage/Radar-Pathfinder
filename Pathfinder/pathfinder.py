@@ -18,7 +18,6 @@ def compute_cost_map(section,
     
     """
 
-
     a = PF_parameters['a']
     b = PF_parameters['b']
     c = PF_parameters['c']
@@ -273,6 +272,7 @@ def make_penalty_matrix(height, penalty=2.0):
     return penalty * (y[:, None] - y[None, :])**2
 
 # USING THE HARD CONSTRAINT IN THE VERTICAL
+# !This is pretty much deprecated and could be removed. Is only kept in for sentimental reasons. 
 # @njit(parallel=True, cache=True)
 # def fast_dp_forward(cost, vertical_radius=3):
 #     height, width = cost.shape
@@ -407,15 +407,7 @@ def find_optimal_path(cost, PF_parameters, direction="forward", layer="bottom"):
     path_signal = [cost[y, x] for y, x in path]
     return path, path_signal
 
-
-
-
-    
-    
-
-
-
-#PATH DISENTANGLER
+# PATH DISENTANGLER
 def find_switch_regions(diff, window_size=20):
     """
     Find contiguous regions where diff <= 0.
@@ -526,9 +518,6 @@ def refine_intersections(paths, section, cost, PF_parameters, window_size=20, n_
 
 
     return refine_intersections(refined_paths, section, cost, PF_parameters, window_size=window_size, n_switches=len(merged))
-
-
-
 
 
 # INTERNAL LAYERS
@@ -764,8 +753,11 @@ def pathfind_in_regions(labeled_array, tmp, section, RADAR, buffer=2, min_cost=N
     return paths, path_costs, path_SNR, path_lengths, idx_from_bottom_interface, idx_from_top_interface
 
 
+# --------------------------------------------------------------------
 
+# Below are some older functions, which are experimental (e.g. calculating interface roughnesses)
 
+# --------------------------------------------------------------------
 
 
 # def rolling_std(df, lengthscale):
@@ -885,19 +877,6 @@ def pathfind_in_regions(labeled_array, tmp, section, RADAR, buffer=2, min_cost=N
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # def find_optimal_path(cost, section, vertical_radius=3, layer="top", allow_wrap=False, wrap_penalty=2.0, bias_strength=0.1):
     
 #     h, w = cost.shape
@@ -919,6 +898,7 @@ def pathfind_in_regions(labeled_array, tmp, section, RADAR, buffer=2, min_cost=N
 #     path_signal = [abs(section[y, x]) for y, x in path]
 
 #     return path, path_signal
+
 # EXPERIMENTING WITH WRAPPING 
 # @njit(parallel=True, cache=True)
 # def fast_dp_forward_wrapping(cost, penalty_matrix, wrap_penalty=1.0):

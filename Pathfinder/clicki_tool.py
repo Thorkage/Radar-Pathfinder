@@ -1,13 +1,5 @@
 from helper_functions import *
-del sys.modules['helper_functions']
-from helper_functions import *
-
 from radar_functions import *
-del sys.modules['radar_functions']
-from radar_functions import *
-
-from pathfinder import *
-del sys.modules['pathfinder']
 from pathfinder import *
 
 
@@ -40,9 +32,6 @@ class LayerCorrectionTool:
         self.internal_paths = RADAR.PF_internal_layers.get('paths', None) if RADAR.PF_internal_layers else None
         self.internal_costs = RADAR.PF_internal_layers.get('costs', None) if RADAR.PF_internal_layers else None
         self.internal_SNR = RADAR.PF_internal_layers.get('SNR', None) if RADAR.PF_internal_layers else None
-        # self.regions = regions
-        # self.base_len_regions_top = len(regions['top'])
-        # self.base_len_regions_bottom = len(regions['bottom'])
         self.base_cost_top = self.unbiased_cost.copy()  # unmasked base
         self.base_cost_bottom = self.unbiased_cost.copy()  # unmasked base
         self.path_top = RADAR.PF_top_interface.copy()
@@ -78,7 +67,6 @@ class LayerCorrectionTool:
         
         gs = gridspec.GridSpec(3, 2, width_ratios=[30, 1], height_ratios=[.2, 1,  3])
         
-        # plt.subplots_adjust(left=0.05, right=0.85, top=1, bottom=0.05)
         if self.has_flightstate:
             self.ax_var = self.fig.add_subplot(gs[0, 0])
             self.ax_var.set_xlim(0, self.section.shape[1])
@@ -87,16 +75,12 @@ class LayerCorrectionTool:
             self.ax_var.spines['right'].set_color('white')
             
             self.twinx_var = self.ax_var.twinx()
-            # self.twinx_var.grid(ls=':', axis='y')
             self.twinx_var.spines['top'].set_color('white')
             self.twinx_var.spines['right'].set_color('white')
             self.var1, = self.ax_var.plot([], [], color='salmon', lw=2, alpha=0.8)
             self.var2, = self.ax_var.plot([], [], color='mediumseagreen', lw=2, alpha=0.8)
             self.var3, = self.twinx_var.plot([], [], color='red', lw=1, alpha=0.8, zorder=100)
         
-        # self.var1_inset_axes = self.ax_var.inset_axes([0.95, 1, 0.05, 0.1], transform=self.ax_var.transAxes)
-        # self.var2_inset_axes = self.ax_var.inset_axes([0.88, 1, 0.05, 0.1], transform=self.ax_var.transAxes)
-
         self.ax_overview = self.fig.add_subplot(gs[1, 0])
         self.ax_overview.set_xlim(0, self.section.shape[1])
         self.ax_overview.set_ylim(self.section.shape[0], 0)
@@ -149,7 +133,6 @@ class LayerCorrectionTool:
         self.point_artists = []
         self.internal_artists = []
         
-        # self.norm_internal = mcolors.Normalize(vmin=np.nanquantile(self.internal_costs, .05), vmax=np.nanquantile(self.internal_costs, .95))
         self.norm_internal = mcolors.Normalize(vmin=1, vmax=3)
 
         colors = [(188/255, 232/255, 67/255), (114/255, 114/255, 114/255)]
@@ -202,7 +185,6 @@ class LayerCorrectionTool:
             # )
             
             
-        # self.map_ax.legend(frameon=False)
         self.quickboost_toggle_ax = self.fig.add_axes([0.83, 0.24, 0.1, 0.05])
         self.quickboost_toggle = CheckButtons(self.quickboost_toggle_ax, ['Quickboost'], [False])
 
@@ -211,40 +193,6 @@ class LayerCorrectionTool:
         self.internal_toggle_button = CheckButtons(self.internal_toggle_ax, ['Internal layers'], [False])
         
         self.status_text = self.fig.text(0.83, 0.11, '', fontsize=10, fontweight='bold', color='red')
-
-        # self.prev_ax = self.fig.add_axes([0.40, 0.9, 0.10, 0.05])
-        # self.next_ax = self.fig.add_axes([0.52, 0.9, 0.10, 0.05])
-        # self.prev_button = Button(self.prev_ax, '← Previous')
-        # self.next_button = Button(self.next_ax, 'Next →')
-
-        # self.chunk_text = self.fig.text(
-        #     0.50, 0.87,
-        #     '',  
-        #     ha='center',
-        #     fontsize=10
-        #     )
-        
-        # self.top_regions_text = self.fig.text(
-        #     0.88, 0.92,
-        #     f'{len(self.regions["top"])}/{self.base_len_regions_top} notifications in top layer',  
-        #     ha='center',
-        #     fontsize=10
-        #     )
-        
-        # self.bottom_regions_text = self.fig.text(
-        #     0.88, 0.88,
-        #     f'{len(self.regions["bottom"])}/{self.base_len_regions_bottom} notifications in bottom layer',  
-        #     ha='center',
-        #     fontsize=10
-        #     )
-        
-        
-
-        
-        # self.save_im_button_ax = self.fig.add_axes([0.83, 0.15, 0.1, 0.05])
-        # self.save_im_button = Button(self.save_im_button_ax, 'Save image and\nannotations')
-        # self.save_im_button.on_clicked(self.save_im)
-        
 
         self.save_button_ax = self.fig.add_axes([0.83, 0.05, 0.1, 0.05])
         self.save_button = Button(self.save_button_ax, 'Save state, paths and\n calculate snow depth')
@@ -265,8 +213,7 @@ class LayerCorrectionTool:
         self.quickboost_toggle.on_clicked(self.toggle_quickboost)
         self.internal_toggle_button.on_clicked(self.toggle_internal_layers)
 
-        # self.next_button.on_clicked(self.next_chunk)
-        # self.prev_button.on_clicked(self.prev_chunk)
+
         if self.has_flightstate:
             self.add_var_panel()
         self.add_overview_panel()
@@ -274,29 +221,7 @@ class LayerCorrectionTool:
         self.update_points()
 
         plt.show()
-        
-        # figManager = plt.get_current_fig_manager()
-        # figManager.window.showMaximized()
-        
-    # def save_im(self, event):
-    #     chunk_data = self.section[:, self.chunk_start:self.chunk_end]
-    #     chunk_data_norm = (chunk_data - chunk_data.min()) / (chunk_data.max() - chunk_data.min())
-    #     chunk_data_uint8 = (chunk_data_norm * 255).astype('uint8')
 
-    #     #save image
-    #     img = Image.fromarray(chunk_data_uint8)
-    #     img.save(f'images/{self.uwibass.dataset_name}_chunk{self.current_chunk}_image.png', compress_level=0)  # PNG is lossless
-        
-    #     #save annotation
-    #     annotation = np.zeros_like(chunk_data, dtype=np.uint8)
-    #     smooth_top = pd.Series(self.path_top[self.chunk_start:self.chunk_end]).rolling(window=5, center=True, min_periods=0).mean().astype('int').values
-    #     smooth_bottom = pd.Series(self.path_bottom[self.chunk_start:self.chunk_end]).rolling(window=5, center=True, min_periods=0).mean().astype('int').values
-        
-    #     for i in range(chunk_data.shape[1]):
-    #         annotation[smooth_top[i]:smooth_bottom[i], i] = 255
-    #     annotation_img = Image.fromarray(annotation)
-    #     annotation_img.save(f'annotations/{self.uwibass.dataset_name}_chunk{self.current_chunk}_annotation.png', compress_level=0)  # PNG is lossless
-        
     
     def toggle_internal_layers(self, event):
         self.show_internal = not self.show_internal
@@ -418,73 +343,7 @@ class LayerCorrectionTool:
         self.draw_chunk_box()
         
         self.fig.canvas.mpl_connect('button_press_event', self.on_overview_click)
-        
-    # def decimate_regions_by_counter(self):
-                
-    #     for layer in ['top', 'bottom']:
-    #         new_regions = []
-            
-    #         for reg in self.regions[layer]:
-    #             recompute_median = np.median(self.recompute_counter[layer][reg['start']:reg['end']])
-                
-    #             if recompute_median < 2:
-    #                 new_regions.append(reg)
-                
-    #         self.regions[layer] = new_regions
-            
-    
-    # def draw_regions(self):
-        
-    #     for patch in getattr(self, 'overview_region_vspans', []):
-    #         patch.remove()
-            
-    #     for patch in getattr(self, 'ax_region_vspans', []):
-    #         patch.remove()
-                
-    #     self.overview_region_vspans = []
-    #     self.ax_region_vspans = []
-
-    #     # if self.active_layer == 'top':
-    #     cmap = plt.cm.Greens
-    #     norm = plt.Normalize(vmin=0, vmax=max(reg['combined_score'] for reg in self.regions['top']))
-    #     for reg in self.regions['top']:
-    #         vspan = self.ax_overview.axvspan(reg['start'], reg['end'], color=cmap(norm(reg['combined_score'])), alpha=0.2, lw=0, zorder=1)
-    #         self.overview_region_vspans.append(vspan)
-            
-    #         if self.chunk_start <= reg['start'] < self.chunk_end or self.chunk_start < reg['end'] <= self.chunk_end:
-    #             a = np.min(self.path_top[reg['start']:reg['end']]) - 5
-    #             b = np.max(self.path_top[reg['start']:reg['end']]) + 5
-    #             if a>b : a, b = b, a
-    #             ymin, ymax = self.ax.get_ylim()
-    #             dy = ymax-ymin
-    #             lims = ((y-ymin)/dy for y in (a, b))
-    #             vspan = self.ax.axvspan(reg['start'],
-    #                                     reg['end'],
-    #                                     *lims,
-    #                                     color=cmap(norm(reg['combined_score'])), alpha=0.2, lw=0, zorder=1)
-    #             self.ax_region_vspans.append(vspan)
-
-    #     # elif self.active_layer == 'bottom':
-    #     cmap = plt.cm.Oranges
-    #     norm = plt.Normalize(vmin=0, vmax=max(reg['combined_score'] for reg in self.regions['bottom']))
-    #     for reg in self.regions['bottom']:
-    #         vspan = self.ax_overview.axvspan(reg['start'], reg['end'], color=cmap(norm(reg['combined_score'])), alpha=0.2, lw=0, zorder=1)
-    #         self.overview_region_vspans.append(vspan)
-            
-    #         if self.chunk_start <= reg['start'] < self.chunk_end or self.chunk_start < reg['end'] <= self.chunk_end:
-    #             a = np.min(self.path_bottom[reg['start']:reg['end']]) - 5
-    #             b = np.max(self.path_bottom[reg['start']:reg['end']]) + 5
-    #             if a>b : a, b = b, a
-    #             ymin, ymax = self.ax.get_ylim()
-    #             dy = ymax-ymin
-    #             lims = ((y-ymin)/dy for y in (a, b))
-    #             vspan = self.ax.axvspan(reg['start'],
-    #                                     reg['end'],
-    #                                     *lims,
-    #                                     color=cmap(norm(reg['combined_score'])), alpha=0.2, lw=0, zorder=1)
-    #             self.ax_region_vspans.append(vspan)
-                
-            
+   
     def draw_chunk_box(self):
         # Remove previous chunk box patches
         for patch in getattr(self, 'chunk_box_patches', []):
@@ -869,14 +728,6 @@ class LayerCorrectionTool:
 
         self.update_cost_maps_after_path_change()
         self.set_chunk_limits()
-
-        # self.regions['top'] = find_flag_regions(self.section, self.path_top)
-        # self.regions['bottom'] = find_flag_regions(self.section, self.path_bottom)
-        
-        # self.decimate_regions_by_counter()
-        # self.draw_regions()
-        # self.top_regions_text.set_text(f'{len(self.regions["top"])}/{self.base_len_regions_top} notifications in top layer')
-        # self.bottom_regions_text.set_text(f'{len(self.regions["bottom"])}/{self.base_len_regions_bottom} notifications in bottom layer')
         
         self.ax.set_xlim(current_xlim)
         self.ax.set_ylim(current_ylim)

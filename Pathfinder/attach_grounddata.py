@@ -1,7 +1,3 @@
-import sys
-
-from helper_functions import *
-del sys.modules['helper_functions']
 from helper_functions import *
 
 def _MP_loader(path, campaignID):
@@ -11,11 +7,13 @@ def _MP_loader(path, campaignID):
     - .nc:  data delivery format used e.g. by SIOS)
     - .mat: older format, similar to .nc
     
-    inputs:
+    Parameters
+    -----------
     path: full path to the file
     campaignID: a unique campaign identifier (e.g. 2019_SIOS) as in the campaigns.yaml config file
     
-    returns:
+    Returns
+    -------
     insitu_lat: latitude of the data points
     insitu_lon: longitude of the data points
     insitu_depth: the MP measurement itself (snow depth)
@@ -100,6 +98,7 @@ def _SP_meta_loader(path, files, transformer):
     Load all snow profiles as a pandas DataFrame from a given campaign (path and list of files).
     Densities are averaged and we estimate a bulk density and associated refractive index for each snow profile via a Monte Carlo simulation.
     """
+    
     df_SP = pd.DataFrame({
         'filename': files,
         'lat': [None] * len(files),

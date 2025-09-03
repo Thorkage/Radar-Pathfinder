@@ -1,8 +1,9 @@
 from helper_functions import *
-del sys.modules['helper_functions']
-from helper_functions import *
 
 def find_dataflashlog(UWIBASS):
+    """
+    
+    """
     
     uwibasstime = UWIBASS.datetime_timestamp
     log_paths = [os.path.join(UWIBASS.data_path, p) for p in UWIBASS.config_paths['dataflashlogs']]

@@ -1,17 +1,6 @@
-import sys
-
 from helper_functions import *
-del sys.modules['helper_functions']
-from helper_functions import *
-
 from add_dataflashlog import *
-del sys.modules['add_dataflashlog']
-from add_dataflashlog import *
-
 from attach_grounddata import *
-del sys.modules['attach_grounddata']
-from attach_grounddata import *
-
 
 def load_campaign_config(file_path="./campaigns_subset.yaml"):
     """
