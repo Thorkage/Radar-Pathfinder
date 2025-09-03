@@ -22,8 +22,6 @@ def load_campaign_config(file_path="./campaigns_subset.yaml"):
     return config
 
 
-        
-        
 def load_RADAR(radar_type='', #UWiBaSS
                    datasetID='',
                    campaignID='',
@@ -48,6 +46,7 @@ def load_RADAR(radar_type='', #UWiBaSS
     RADAR.campaignID = campaignID
     RADAR.data_path = config['master_path']
     RADAR.config_paths = config
+    RADAR.full_path = full_path
     
     print(f'Dataset {RADAR.datasetID} from campaign {RADAR.campaignID} is loaded from {full_path}')
 
@@ -67,7 +66,7 @@ def populate_datafields(RADAR,
     
     
     """
-    if RADAR.radar_type == 'UWiBaSS':
+    if RADAR.radar_type == 'UWiBaSS' and has_flightstate and has_geolocation:
         RADAR = _check_auxilliary(RADAR, check_dataflashlog)
     
     RADAR.PF_parameters = PF_parameters
@@ -106,9 +105,13 @@ def _check_auxilliary(RADAR, check_dataflashlog):
     RADAR.compensated_pitch = RADAR.pitch + 6
     RADAR.CTUN_SAlt_filtered = remove_altitude_outliers(RADAR.CTUN_SAlt, diff_threshold=.25)
     
-    #TODO add altitude mask
-    # mask = (uwibass.CTUN_SAlt_filtered < 2 * (uwibass.range_air[-1] / 100) - 2 * uwibass.expected_snow_depth) & (uwibass.CTUN_SAlt_filtered > 1 * (uwibass.range_air[-1] / 100) + uwibass.expected_snow_depth)
-    
+    if 'target_type' in RADAR.__dict__:
+        expected_snow_depth = 2.5 if RADAR.target_type == 'terrestrial' or RADAR.target_type == 'unknown' else 0.5
+    else:
+        RADAR = _add_target_type(RADAR)
+        expected_snow_depth = 2.5 if RADAR.target_type == 'terrestrial' or RADAR.target_type == 'unknown' else 0.5
+        
+    RADAR.altitude_mask = (RADAR.CTUN_SAlt_filtered < 2 * (RADAR.range_air[-1] / 100) - 2 * expected_snow_depth) & (RADAR.CTUN_SAlt_filtered > 1 * (RADAR.range_air[-1] / 100) + expected_snow_depth)
     return RADAR
 
 def _check_dataflashlog(RADAR):
@@ -125,7 +128,6 @@ def _check_dataflashlog(RADAR):
     RADAR, dataflashlog_file = find_dataflashlog(RADAR)
     RADAR = attach_dataflashlog(RADAR, load_dataflashlog(RADAR),
                                 dataflashlog_variables)
-
     return RADAR
 
 
@@ -187,6 +189,9 @@ def _add_RPCA(RADAR,
                     verbose=False
             )
         RADAR.rx_rpca = S.copy()
+        
+        with open(RADAR.full_path, 'wb') as outp:
+            pickle.dump(RADAR, outp, pickle.HIGHEST_PROTOCOL)        
     return RADAR
  
 def _add_radar_footprints(RADAR):

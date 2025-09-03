@@ -71,7 +71,9 @@ class LayerCorrectionTool:
 
         self.fig = plt.figure(figsize=(20, 10), dpi=100, constrained_layout=True)
 
-        self.figtitle = self.fig.suptitle(f'{self.RADAR.radar_type}\nDataset: {self.RADAR.datasetID} - dataflashlog: {self.RADAR.dataflashlog_path.split("/")[-1].split("_")[0]}\n',
+        
+        
+        self.figtitle = self.fig.suptitle(f'{self.RADAR.radar_type}',
                           fontsize=11, ha='left', x=0.05)
         
         gs = gridspec.GridSpec(3, 2, width_ratios=[30, 1], height_ratios=[.2, 1,  3])

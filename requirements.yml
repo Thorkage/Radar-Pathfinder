@@ -9,6 +9,7 @@ dependencies:
   - pyyaml
   - tqdm
   - xarray
+  - netcdf4
   - pandas
   - geopandas
   - scipy
