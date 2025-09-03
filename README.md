@@ -36,21 +36,21 @@ Jenssen, Rolf-Ole R, Hannah Vickers, Robert Ricker, Eirik Malnes, and Svein Jaco
 
 #### Other GPR/ radar systems that have been tested:
 
-GEORESARCH UAV-mounted GPR:
+(1) GEORESARCH UAV-mounted GPR:
 
 Siebenbrunner, Anna. “UAV-Borne GPR for Snowpack Investigation.” Master Thesis, 2023.
 
-Siebenbrunner, Anna, Robert Delleske, Rolf-Ole Rydeng Jenssen, and Markus Keuschnig. Unveiling Spatial Snow Depth Variability through UAV-Borne GPR in Alpine Environments. 2025.
+Siebenbrunner, Anna and Delleske, Robert and Jenssen, Rolf-Ole Rydeng and Keuschnig, Markus, Unveiling Spatial Snow Depth Variability Through Uav-Borne GPR in Alpine Environments. 2025. Available at SSRN: https://ssrn.com/abstract=5258679 or http://dx.doi.org/10.2139/ssrn.5258679
 
-Alfred-Wegener Institute helicopter-mounted GPR:
-
-Pfaffling, Andreas. Ground Penetrating Radar Snow Thickness Profiling during WWOS 06, Field Data Report. 2007.
-
-Pfaffhuber, Andreas A., Jan L. Lieser, and Christian Haas. “Snow Thickness Profiling on Antarctic Sea Ice with GPR—Rapid and Accurate Measurements with the Potential to Upscale Needles to a Haystack.” Geophysical Research Letters 44, no. 15 (2017): 7836–44. https://doi.org/10.1002/2017GL074202.
-
-
-Kiwi snow radar from Gateway Antarctica:
+(2) Kiwi snow radar from Gateway Antarctica:
 
 Tan, Adrian Eng-Choon, Josh McCulloch, Wolfgang Rack, Ian Platt, and Ian Woodhead. “Radar Measurements of Snow Depth Over Sea Ice on an Unmanned Aerial Vehicle.” IEEE Transactions on Geoscience and Remote Sensing 59, no. 3 (2021): 1868–75. https://doi.org/10.1109/TGRS.2020.3006182.
 
 Barras, Pauline, Adrian Eng-Choon Tan, Wolfgang Rack, et al. “Validation of a New Airborne Snow Radar on Antarctic Sea Ice.” Paper presented at IGARSS2025, Brisbane, Australia. 2025.
+
+
+(3) Alfred-Wegener Institute helicopter-mounted GPR:
+
+Pfaffling, Andreas. Ground Penetrating Radar Snow Thickness Profiling during WWOS 06, Field Data Report. 2007.
+
+Pfaffhuber, Andreas A., Jan L. Lieser, and Christian Haas. “Snow Thickness Profiling on Antarctic Sea Ice with GPR—Rapid and Accurate Measurements with the Potential to Upscale Needles to a Haystack.” Geophysical Research Letters 44, no. 15 (2017): 7836–44. https://doi.org/10.1002/2017GL074202.
