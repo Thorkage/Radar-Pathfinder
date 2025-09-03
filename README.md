@@ -12,5 +12,3 @@
 ```
 conda env create -f environment.yml
 ```
-
-# Radar-Pathfinder
