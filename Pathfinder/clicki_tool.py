@@ -19,11 +19,8 @@ class LayerCorrectionTool:
         self.df_SP = df_SP
         self.dict_SP = dict_SP
         self.RADAR = RADAR
-        
-        if RADAR.radar_type == 'UWiBaSS':
-            self.full_path = os.path.join(RADAR.data_path, 'UWiBaSS', RADAR.datasetID)
-        else:
-            self.full_path = None
+
+        self.full_path = RADAR.full_path
             
         self.section = RADAR.rx_rpca
         self.cost_top = RADAR.PF_cost_maps['top']
@@ -290,14 +287,14 @@ class LayerCorrectionTool:
         self.RADAR.PF_snow_depth_air = np.array([range_air[self.RADAR.PF_bottom_interface[i]] - range_air[self.RADAR.PF_top_interface[i]] for i in range(len(self.RADAR.PF_bottom_interface))]) / 100
         self.RADAR.PF_snow_depth = np.array([range_snow[self.RADAR.PF_bottom_interface[i], i] - range_snow[self.RADAR.PF_top_interface[i], i] for i in range(len(self.RADAR.PF_bottom_interface))]) / 100
 
-        self.RADAR.PF_top_interface_elev = [self.RADAR.range_air[p]/100 + self.RADAR.range_air[-1]/100 * (self.RADAR.CTUN_SAlt_filtered[p] // (self.RADAR.range_air[-1]/100)) for p in self.RADAR.PF_top_interface]
-        self.RADAR.PF_bottom_interface_elev = self.RADAR.PF_top_interface_elev + self.RADAR.PF_snow_depth
-
+        # Uncertainties
         self.RADAR.PF_radar_uncertainty, self.RADAR.PF_sampling_uncertainty, self.RADAR.PF_top_interface_SNR, self.RADAR.PF_bottom_interface_SNR, self.RADAR.range_resolution_air, self.RADAR.range_resolution_snow = calculate_radar_uncertainties(self.RADAR, self.section, self.unbiased_cost)
         self.RADAR.PF_snow_uncertainty = calculate_snow_depth_uncertainty(self.RADAR)
         self.RADAR.PF_total_uncertainty = calculate_total_uncertainty(self.RADAR)
 
 
+        # self.RADAR.PF_top_interface_elev = [self.RADAR.range_air[p]/100 + self.RADAR.range_air[-1]/100 * (self.RADAR.CTUN_SAlt_filtered[p] // (self.RADAR.range_air[-1]/100)) for p in self.RADAR.PF_top_interface]
+        # self.RADAR.PF_bottom_interface_elev = self.RADAR.PF_top_interface_elev + self.RADAR.PF_snow_depth
         # self.uwibass.PF_top_interface_roughness = calculate_topo_roughness(self.uwibass.log_UTM_x, self.uwibass.log_UTM_y, self.uwibass.PF_top_interface_elev,
         #                                  lengthscale=2)
         # self.uwibass.PF_bottom_interface_roughness = calculate_topo_roughness(self.uwibass.log_UTM_x, self.uwibass.log_UTM_y, self.uwibass.PF_bottom_interface_elev,

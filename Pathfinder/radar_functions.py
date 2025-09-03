@@ -188,6 +188,8 @@ def _add_RPCA(RADAR,
             pickle.dump(RADAR, outp, pickle.HIGHEST_PROTOCOL)        
     return RADAR
  
+ 
+# TODO: Allow for fixed radius footprint if HPBW is unknown
 def _add_radar_footprints(RADAR):
     """
     """
