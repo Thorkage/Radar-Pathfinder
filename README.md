@@ -13,10 +13,12 @@ Pathfinder can be run on any 2D array and has been tested on various snow-measur
 
 ### Requirements
 
-*Pathfinder* is built with python v3.13. Additional packages are listed in requirements.yml and can be installed using e.g. conda with:
+*Pathfinder* is built with Python v3.13. Additional packages are listed in requirements.yml and can be installed using e.g. conda with:
 
 ```
-conda env create -f requirements.yml
+(base) $ git clone https://github.com/Thorkage/Radar-Pathfinder
+(base) $ cd ./Radar-Pathfinder
+(base) conda env create -f requirements.yml
+(base) conda activate pathfinder
 ```
 
-Just download the whole folder as .zip and cd into it :)
