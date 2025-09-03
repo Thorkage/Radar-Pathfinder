@@ -28,13 +28,7 @@ print("Directory:", directory)
 print("DatasetID:", datasetID)
 print("CampaignID:", campaignID)
 
-
 RADAR = load_RADAR(radar_type='UWiBaSS', datasetID=datasetID, campaignID=campaignID)
-
-transformer = Transformer.from_crs(4326, CRS.from_proj4(f"+proj=utm +zone={RADAR.UTM_zone} +ellps=WGS84 +datum=WGS84 +units=m +type=crs"), always_xy=True)
-reverse_transformer = Transformer.from_crs(CRS.from_proj4(f"+proj=utm +zone={RADAR.UTM_zone} +ellps=WGS84 +datum=WGS84 +units=m +type=crs"), 4326, always_xy=True)
-
-
 RADAR, df_MP, df_SP, dict_SP = populate_datafields(RADAR,
                                      PF_parameters=RADAR.PF_parameters,
                                      has_flightstate=RADAR.has_flightstate,
@@ -43,7 +37,6 @@ RADAR, df_MP, df_SP, dict_SP = populate_datafields(RADAR,
                                      check_dataflashlog=RADAR.check_dataflashlog,
                                      )
 
-#TODO something is wrong in the MP&SP display (probably a factor 100 (cm --> m) missing somewhere)
 clicki_tool = LayerCorrectionTool(RADAR,
                                   has_geolocation=RADAR.has_geolocation,
                                   has_flightstate=RADAR.has_flightstate,
