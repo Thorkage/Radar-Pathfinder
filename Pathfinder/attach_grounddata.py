@@ -347,7 +347,7 @@ def colocate_MP_and_SP_to_RADAR(RADAR,
     RADAR.MP_N_points = stats_full['n_MP_points'].values
     
     
-    dzs = RADAR.range_air[1] / np.sqrt(RADAR.SP_bulk_eps_r)        
+    dzs = RADAR.range_air[1] / np.sqrt(RADAR.SP_bulk_eps_r) / 100   
     RADAR.MP_snow_depth_in_range_bins = np.round(RADAR.MP_snow_depth / dzs).astype(int)
     
     return RADAR, df_SP, dict_SP

@@ -55,6 +55,11 @@ def populate_datafields(RADAR,
     
     
     """
+
+    RADAR.has_flightstate = has_flightstate
+    RADAR.has_geolocation = has_geolocation
+    RADAR.add_insitu_data = add_insitu_data
+    
     if RADAR.radar_type == 'UWiBaSS' and has_flightstate and has_geolocation:
         RADAR = _check_auxilliary(RADAR, check_dataflashlog)
     
@@ -76,6 +81,8 @@ def populate_datafields(RADAR,
         return RADAR, df_MP, df_SP, dict_SP
     
     else:
+        RADAR.SP_bulk_eps_r = np.ones(RADAR.rx_rpca.shape[1]) * 1.5
+        RADAR.SP_bulk_eps_r_uncertainty = np.ones(RADAR.rx_rpca.shape[1]) * 0.1
         return RADAR, None, None, None
 
 
@@ -127,10 +134,8 @@ def _add_UTM(RADAR):
     """
     zone_number = utm.latlon_to_zone_number(np.nanmedian(RADAR.GPS_Lat), np.nanmedian(RADAR.GPS_Lng))
     RADAR.UTM_zone = zone_number
-
     transformer = Transformer.from_crs(4326, CRS.from_proj4(f"+proj=utm +zone={RADAR.UTM_zone} +ellps=WGS84 +datum=WGS84 +units=m +type=crs"), always_xy=True)
     reverse_transformer = Transformer.from_crs(CRS.from_proj4(f"+proj=utm +zone={RADAR.UTM_zone} +ellps=WGS84 +datum=WGS84 +units=m +type=crs"), 4326, always_xy=True)
-
     return RADAR, transformer, reverse_transformer
 
 def _add_target_type(RADAR):
@@ -252,7 +257,7 @@ def calculate_radar_uncertainties(RADAR, section, unbiased_cost):
                         reduce=False
                         )
 
-    flattened_bottom_trace = pd.Series(RADAR.PF_bottom_interface).rolling(window=3, min_periods=0, center=True).mean().astype(int)- pd.Series(uwibass.PF_top_interface).rolling(window=3, min_periods=0, center=True).mean().astype(int)
+    flattened_bottom_trace = pd.Series(RADAR.PF_bottom_interface).rolling(window=3, min_periods=0, center=True).mean().astype(int)- pd.Series(RADAR.PF_top_interface).rolling(window=3, min_periods=0, center=True).mean().astype(int)
 
     snow_signal = mask_path_in_cost(flattened_section,
                                 zip(flattened_bottom_trace, range(len(RADAR.PF_bottom_interface))),
