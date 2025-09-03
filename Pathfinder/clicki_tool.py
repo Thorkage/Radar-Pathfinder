@@ -382,18 +382,6 @@ class LayerCorrectionTool:
         with open(self.full_path, 'wb') as outp:
             pickle.dump(self.RADAR, outp, pickle.HIGHEST_PROTOCOL)
         
-        # TODO save the important (e.g. non-2D) data to a .csv?
-        # uwibass_df = pd.DataFrame({
-        #     'timestamp': self.uwibass.datetime_timestamp,
-        #     'x': self.uwibass.log_UTM_x,
-        #     'y': self.uwibass.log_UTM_y,
-        #     'lon': self.uwibass.GPS_Lng,
-        #     'lat': self.uwibass.GPS_Lat,
-        #     'alt': self.uwibass.GPS_Alt,
-        #     'rngf': self.uwibass.CTUN_SAlt,
-        #     'roll': self.uwibass.roll,
-        #     'pitch': self.uwibass.pitch,
-        # })
         self.status_text.set_text("Paths saved to RADAR.")
         self.fig.canvas.draw_idle()
 

@@ -12,6 +12,7 @@ dependencies:
   - netcdf4
   - pandas
   - geopandas
+  - segyio
   - scipy
   - scikit-image
   - cartopy

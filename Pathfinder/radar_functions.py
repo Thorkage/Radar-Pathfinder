@@ -36,7 +36,7 @@ def load_RADAR(radar_type='', #UWiBaSS
     if radar_type == 'UWiBaSS':
         full_path = os.path.join(config['master_path'], 'UWiBaSS', datasetID , 'uwibass_object.pkl')
     else:
-        full_path = path.copy()
+        full_path = path
         
     with open(full_path, 'rb') as inp:
         RADAR = pickle.load(inp)
