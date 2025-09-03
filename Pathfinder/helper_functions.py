@@ -97,16 +97,25 @@ def make_nc_file(RADAR):
     """
     
     """
-    
-    
-    
     return RADAR
 
 
 
 def find_nearest_idx(array, value):
     """
+    Finds the index of the element in the input array that is closest to the specified value.
     
+    Parameters
+    ----------
+    array : array-like
+        The input array in which to search for the nearest value.
+    value : float or int
+        The value to find the closest match for in the array.
+        
+    Returns
+    -------
+    idx : int
+        The index of the element in the array that is closest to the specified value.
     """
     array = np.asarray(array)
     idx = (np.abs(array - value)).argmin()
@@ -114,14 +123,29 @@ def find_nearest_idx(array, value):
 
 def flatten(xss):
     """
-    
+    Flattens a list of lists into a single list.
+    Args:
+        xss (Iterable[Iterable[Any]]): A list (or iterable) of lists (or iterables) to be flattened.
+    Returns:
+        list: A single list containing all elements from the sublists, in order.
+    Example:
+        >>> flatten([[1, 2], [3, 4], [5]])
+        [1, 2, 3, 4, 5]
     """
     return [x for xs in xss for x in xs]
 
 
 def remove_altitude_outliers(altitude, diff_threshold=10):
     """
-    
+    Removes outlier values from an altitude array based on a specified difference threshold.
+    This function identifies and replaces altitude values that differ from their neighbors by more than `diff_threshold` with NaN, 
+    then interpolates to fill these gaps. The process repeats until no outliers remain according to the threshold.
+    Parameters:
+        altitude (array-like): Sequence of altitude values to be filtered.
+        diff_threshold (float, optional): Maximum allowed difference between consecutive altitude values. 
+                                          Values exceeding this threshold are considered outliers. Default is 10.
+    Returns:
+        numpy.ndarray: The filtered altitude array with outliers removed and interpolated.
     """
     altitude = np.array(altitude)
     
@@ -135,7 +159,14 @@ def remove_altitude_outliers(altitude, diff_threshold=10):
 
 def mask_path_in_cost(cost, path, radius=3, strength=1):
     """
-    
+    Masks (increases) the cost values along a specified path in a 2D cost array, with a Gaussian-like spread perpendicular to the path.
+    Parameters:
+        cost (np.ndarray): 2D array representing the cost map to be modified.
+        path (Iterable[Tuple[int, int]]): Sequence of (y, x) coordinates representing the path to be masked.
+        radius (int, optional): The radius (in pixels) around each path point to apply the masking effect. Default is 3.
+        strength (float, optional): The strength of the masking effect. Higher values increase the cost more. Default is 1.
+    Returns:
+        np.ndarray: A copy of the input cost array with increased values along and near the specified path.
     """
     masked_cost = cost.copy()
     h, w = cost.shape
@@ -149,7 +180,24 @@ def mask_path_in_cost(cost, path, radius=3, strength=1):
 
 def mask_path_in_cost2(cost, path, radius=3, strength=1):
     """
+    Masks (increases) the cost values along a given path in a 2D cost array, within a specified vertical radius.
     
+    Parameters
+    ----------
+    
+        cost : np.ndarray
+            2D array representing the cost map to be modified.
+        path : Iterable[Tuple[int, int]]
+            Sequence of (y, x) coordinates representing the path to be masked.
+        radius : int, optional
+            Vertical radius around each path point within which the cost is increased. Default is 3.
+        strength : Union[int, np.ndarray], optional
+            Strength of the masking. If an array, should be indexed by x. Default is 1.
+            
+    Returns
+    -------
+        masked_cost : np.ndarray
+            A copy of the input cost array with increased values along and near the specified path.    
     """
     masked_cost = cost.copy()
     h, w = cost.shape
@@ -163,7 +211,16 @@ def mask_path_in_cost2(cost, path, radius=3, strength=1):
 
 def mask_cost_below_above_path(cost, path, strength=1, layer='top'):
     """
-    
+    Masks (increases) the cost values in a 2D array either above or below a given path.
+    This function takes a 2D cost array and a path (as a list of (y, x) coordinates), and increases the cost values either above ('top') or below ('bottom') each point in the path by a specified strength. This can be useful for discouraging pathfinding algorithms from crossing certain regions relative to a given path.
+    Args:
+        cost (np.ndarray): 2D array representing the cost map.
+        path (Iterable[Tuple[int, int]]): Sequence of (y, x) coordinates representing the path.
+        strength (float, optional): Value to add to the masked regions. Default is 1.
+        layer (str, optional): Determines which side of the path to mask. 
+            'top' increases costs above the path, 'bottom' increases costs below. Default is 'top'.
+    Returns:
+        np.ndarray: A copy of the cost array with the specified regions masked (increased).
     """
     masked_cost = cost.copy()
     for y, x in path:
@@ -175,44 +232,38 @@ def mask_cost_below_above_path(cost, path, strength=1, layer='top'):
 
 
 
-
-def flatten_to_altitude(uwibass, section):
-    # Compute vertical spacing (delta_z) in section (in same units as uwibass.alt)
-    delta_z = uwibass.range_air[1]  # assumes range_snow is in same units as alt
-
-    # Reference altitude (e.g., median or first value)
-    ref_alt = np.nanmedian(uwibass.GPS_Alt)
-
-    # Compute shift (in pixels) for each column to align to ref_alt
-    shifts = np.round((uwibass.GPS_Alt - ref_alt) / delta_z).astype(int)
-
-    # Create a copy of section to flatten
-    flattened_section = np.zeros_like(section)
-    for i in range(section.shape[1]):
-        flattened_section[:, i] = np.roll(section[:, i], -shifts[i])
-
-    return flattened_section
-    
-
-def flatten_to_interface(arr, uwibass, interface='bottom', smoothing_window=5, reduce=False, top_buffer=None):
+def flatten_to_interface(arr, RADAR, interface='bottom', smoothing_window=5, reduce=False, top_buffer=None):
     """
-    Flatten the radargram to a specific interface (top or bottom) based on the UWIbass object.
-    
-    Parameters:
-    - arr: 2D numpy array of the radargram
-    - uwibass: UWIbass object containing the interfaces
-    - interface: 'top' or 'bottom' to specify which interface to flatten to
-    
-    Returns:
-    - flattened_arr: 2D numpy array flattened to the specified interface
+    Aligns (flattens) a radargram array to a specified interface (either 'top' or 'bottom') using interface indices
+    from a RADAR object. Optionally applies smoothing to the interface, reduces output to valid rows, and adds a buffer of NaNs at the top.
+
+    Parameters
+    ----------
+    arr : np.ndarray
+        2D radargram array to be flattened (shape: [depth, trace]).
+    RADAR : object
+        Object containing interface arrays (PF_top_interface, PF_bottom_interface).
+    interface : str, optional
+        Which interface to flatten to: 'top' or 'bottom'. Default is 'bottom'.
+    smoothing_window : int, optional
+        Window size for smoothing the interface indices. Default is 5.
+    reduce : bool, optional
+        If True, removes rows that are all NaN after flattening. Default is False.
+    top_buffer : int or None, optional
+        If set, fills the first `top_buffer` rows with NaN after flattening. Default is None.
+
+    Returns
+    -------
+    flattened_arr : np.ndarray
+        The radargram array aligned to the specified interface.
     """
     
     if interface == 'top':
-        interface_indices = np.convolve(uwibass.PF_top_interface, np.ones(smoothing_window)/smoothing_window, mode='same').astype(int)
+        interface_indices = np.convolve(RADAR.PF_top_interface, np.ones(smoothing_window)/smoothing_window, mode='same').astype(int)
         sign = -1
         
     elif interface == 'bottom':
-        interface_indices = np.convolve(uwibass.PF_bottom_interface, np.ones(smoothing_window)/smoothing_window, mode='same').astype(int)
+        interface_indices = np.convolve(RADAR.PF_bottom_interface, np.ones(smoothing_window)/smoothing_window, mode='same').astype(int)
         sign = -1  # Roll down for bottom interface
         
     else:
@@ -223,7 +274,6 @@ def flatten_to_interface(arr, uwibass, interface='bottom', smoothing_window=5, r
     for i in range(arr.shape[1]):
         flattened_arr[:, i] = np.roll(arr[:, i], sign * interface_indices[i])
     
-    
     if reduce:
         valid_rows = ~np.all(np.isnan(flattened_arr), axis=1)
         flattened_arr = flattened_arr[valid_rows]
@@ -233,41 +283,32 @@ def flatten_to_interface(arr, uwibass, interface='bottom', smoothing_window=5, r
         
     return flattened_arr
 
-
-# def compute_regions(indices, windowing=False, window_size=100, section_length=1e6, min_length=500, plot=False, ax=None):
-#     regions = []
-    
-#     if windowing == True:
-        
-#         buffered_indices = []
-#         for idx in indices:
-#             buffered_indices.extend(range(max(0, idx - window_size), min(section_length, idx + window_size + 1)))
-#         indices = np.unique(buffered_indices)
-#         # indices = buffered_indices
-        
-#     start = indices[0]
-#     for i in range(1, len(indices)):
-#         if indices[i] != indices[i - 1] + 1:
-#             regions.append((start, indices[i - 1]))
-#             start = indices[i]
-            
-#     regions.append((start, indices[-1]))
-    
-#     regions_final = []
-#     for i in range(len(regions)):
-#         if (regions[i][1] - regions[i][0]) > min_length:
-#             regions_final.append((regions[i][0], regions[i][1]))
-            
-#     if plot and ax:
-#         for reg in regions:
-#             ax.axvspan(reg[0], reg[1], color='green', alpha=0.1)
-#     return regions_final
-
 def unwrap_radargram(section, altitude, unambiguous_range, dz):
     """
+    Unwraps a radargram image by vertically shifting each column according to the corresponding altitude,
+    effectively correcting for topographic variations and aligning subsurface features.
     
+    Parameters
+    ----------
+    section : np.ndarray
+        2D array (H, W) representing the radargram, where H is the number of depth samples and W is the number of columns (traces).
+    altitude : np.ndarray
+        1D array of length W containing the altitude (in meters) for each column of the radargram.
+    unambiguous_range : float
+        The unambiguous range (in meters) of the radar system, used to wrap the altitude values.
+    dz : float
+        The vertical sampling interval (in meters) per pixel in the radargram.
+        
+    Returns
+    -------
+    im_unwrapped : np.ndarray
+        The unwrapped radargram image with corrected vertical alignment.
+    y_axis : np.ndarray
+        1D array representing the depth axis (in meters) for the unwrapped image.
+    shifts : list of int
+        List of vertical shift values (in pixels) applied to each column.
     """
-    
+        
     H, W = section.shape
     R = unambiguous_range
     max_depth = np.max(altitude)
@@ -297,6 +338,30 @@ def unwrap_radargram(section, altitude, unambiguous_range, dz):
     return im_unwrapped, y_axis, shifts
 
 
+
+
+# def flatten_to_altitude(RADAR, section):
+#     """
+    
+#     """
+#     # Compute vertical spacing (delta_z) in section (in same units as uwibass.alt)
+#     delta_z = RADAR.range_air[1]  # assumes range_snow is in same units as alt
+
+#     # Reference altitude (e.g., median or first value)
+#     ref_alt = np.nanmedian(RADAR.GPS_Alt)
+
+#     # Compute shift (in pixels) for each column to align to ref_alt
+#     shifts = np.round((RADAR.GPS_Alt - ref_alt) / delta_z).astype(int)
+
+#     # Create a copy of section to flatten
+#     flattened_section = np.zeros_like(section)
+#     for i in range(section.shape[1]):
+#         flattened_section[:, i] = np.roll(section[:, i], -shifts[i])
+
+#     return flattened_section
+    
+    
+    
 def mag2db(magnitude):
         magnitude = np.maximum(magnitude, 1e-10)  # Prevent log(0) or negative values
         return 20 * np.log10(magnitude)

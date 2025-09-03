@@ -1,18 +1,29 @@
-name: pathfinder
+name: pathfinder-env
 channels:
   - conda-forge
+  - defaults
 dependencies:
-  - python==3.13  
-  - sys
-  - pyrpca
+  - python=3.13 
   - numpy
   - numba
-  - shapely
-  - cartopy
-  - scikit-image
-  - pandas
-  - matplotlib
-  - scipy
-  - pyproj
+  - pyyaml
   - tqdm
-  - datetime
+  - xarray
+  - pandas
+  - geopandas
+  - scipy
+  - scikit-image
+  - cartopy
+  - pyproj
+  - utm
+  - basemap
+  - shapely
+  - owslib
+  - matplotlib
+  - seaborn
+  - cmcrameri
+  - cmasher
+  - cmocean
+  - pip
+  - pip:
+      - pyrpca   # comes from PyPI, not conda
