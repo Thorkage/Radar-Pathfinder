@@ -10,5 +10,5 @@
 *Pathfinder* is built with python v3.13. Additional packages are listed in requirements.yml and can be installed using e.g. conda with:
 
 ```
-conda env create -f environment.yml
+conda env create -f requirements.yml
 ```
