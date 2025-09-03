@@ -1,0 +1,336 @@
+{
+    "id": "niviz_station:1",
+    "name": "Gangskaret 20240425",
+    "position": {
+        "uom": "m",
+        "latitude": 78.10037,
+        "longitude": 15.76505,
+        "altitude": null,
+        "angle": null,
+        "_azimuth": null,
+        "_aspect": "",
+        "description": ""
+    },
+    "profiles": [
+        {
+            "date": "2024-04-25T00:00:00.000+00:00",
+            "top": 24,
+            "bottom": 0,
+            "info": {
+                "profile_gmlid": "niviz_profile:1",
+                "observer_gmlid": "niviz_observer:1",
+                "operation_gmlid": "niviz_operation",
+                "precipitation": "",
+                "sky": "clear",
+                "ta": -2.5,
+                "roughness": "",
+                "comment": {
+                    "metadata": "",
+                    "weather": "",
+                    "surface": "",
+                    "snowpack": ""
+                },
+
+                "operation": "",
+                "observer": "Robbie Mallett",
+                "hn24": "",
+                "hs": "",
+                "slf": {
+                    "hasty": false,
+                    "profilenr": "",
+                    "txt": {
+                        "default": "",
+                        "ss": "",
+                        "rb": "",
+                        "loc": "",
+                        "profile": "",
+                        "drift": "",
+                        "signals": "",
+                        "avalanches": "",
+                        "danger": "",
+                        "confidential": "",
+                        "weather": "",
+                        "remarks": ""
+                    }
+                }
+            },
+            "features": [
+                "hardness",
+                "grainshape",
+                "density",
+                "thickness"
+            ],
+            
+            "hardness": {
+                "type": "hardness",
+                "elements": [
+                    {
+                        "meta": {
+                            "pointprofile": false
+                        },
+                        "layers": [
+                            {
+                                "value": 4,
+                                "top": 5,
+                                "bottom": 0
+                            },
+                            {
+                                "value": 5,
+                                "top": 6,
+                                "bottom": 5
+                            },
+                            {
+                                "value": 3,
+                                "top": 27,
+                                "bottom": 6
+                            },
+                            {
+                                "value": 5,
+                                "top": 27,
+                                "bottom": 27
+                            },
+                            {
+                                "value": 2,
+                                "top": 66,
+                                "bottom": 27
+                            },
+                            {
+                                "value": 3,
+                                "top": 70,
+                                "bottom": 66
+                            },
+                            {
+                                "value": 2,
+                                "top": 77,
+                                "bottom": 70
+                            },
+                            {
+                                "value": 3,
+                                "top": 85,
+                                "bottom": 77
+                            },
+                            {
+                                "value": 5,
+                                "top": 86,
+                                "bottom": 85
+                            },
+                            {
+                                "value": 1,
+                                "top": 114,
+                                "bottom": 86
+                            }
+                        ]
+                    }
+                ]
+            },
+            "grainshape": {
+                "type": "grainshape",
+                "elements": [
+                    {
+                        "meta": {
+                            "pointprofile": false
+                        },
+                        "layers": [
+
+                            {
+                                "value": {
+                                    "primary": "RG",
+                                    "secondary": "FC"
+                                },
+                                "top": 5,
+                                "bottom": 0
+                            },
+                            {
+                                "value": {
+                                    "primary": "IF",
+                                    "secondary": null
+                                },
+                                "top": 6,
+                                "bottom": 5
+                            },
+                            {
+                                "value": {
+                                    "primary": "RG",
+                                    "secondary": null
+                                },
+                                "top": 27,
+                                "bottom": 6
+                            },
+                            {
+                                "value": {
+                                    "primary": "IF",
+                                    "secondary": "RGwp"
+                                },
+                                "top": 27,
+                                "bottom": 27
+                            },
+                            {
+                                "value": {
+                                    "primary": "RG",
+                                    "secondary": "MF"
+                                },
+                                "top": 66,
+                                "bottom": 27
+                            },
+                            {
+                                "value": {
+                                    "primary": "RG",
+                                    "secondary": "MF"
+                                },
+                                "top": 70,
+                                "bottom": 66
+                            },
+                            {
+                                "value": {
+                                    "primary": "RG",
+                                    "secondary": "MF"
+                                },
+                                "top": 77,
+                                "bottom": 70
+                            },
+                            {
+                                "value": {
+                                    "primary": "RG",
+                                    "secondary": "MF"
+                                },
+                                "top": 85,
+                                "bottom": 77
+                            },
+                            {
+                                "value": {
+                                    "primary": "RGwp",
+                                    "secondary": null
+                                },
+                                "top": 86,
+                                "bottom": 85
+                            },
+                            {
+                                "value": {
+                                    "primary": null,
+                                    "secondary": null
+                                },
+                                "top": 114,
+                                "bottom": 86
+                            }
+
+                        ]
+                    }
+                ]
+            },
+
+            "density": {
+                "type": "density",
+                "elements": [
+                    {
+                        "meta": {
+                            "pointprofile": false,
+                            "method": "Snow Cutter",
+                            "comment": "2 x 100 ml"
+                        },
+                        "layers": [
+                            {
+                                "value": 318,
+                                "top": 5,
+                                "bottom": 0
+                            },
+                            {
+                                "value": 917,
+                                "top": 6,
+                                "bottom": 5
+                            },
+                            {
+                                "value": 327.5,
+                                "top": 26,
+                                "bottom": 6
+                            },
+                            {
+                                "value": 917,
+                                "top": 27,
+                                "bottom": 26
+                            },
+                            {
+                                "value": 410.5,
+                                "top": 66,
+                                "bottom": 27
+                            },
+                            {
+                                "value": 318.5,
+                                "top": 70,
+                                "bottom": 66
+                            },
+                            {
+                                "value": 350.5,
+                                "top": 77,
+                                "bottom": 70
+                            },
+                            {
+                                "value": 453.5,
+                                "top": 85,
+                                "bottom": 77
+                            }
+                        ]
+                    }
+                ]
+            },
+            "thickness": {
+                "type": "thickness",
+                "elements": [
+                    {
+                        "meta": {
+                            "pointprofile": false
+                        },
+                        "layers": [
+                            {
+                                "value": 5,
+                                "top": 5,
+                                "bottom": 0
+                            },
+                            {
+                                "value": 1,
+                                "top": 6,
+                                "bottom": 5
+                            },
+                            {
+                                "value": 21,
+                                "top": 27,
+                                "bottom": 6
+                            },
+                            {
+                                "value": 39,
+                                "top": 66,
+                                "bottom": 27
+                            },
+                            {
+                                "value": 16,
+                                "top": 70,
+                                "bottom": 66
+                            },
+                            {
+                                "value": 7,
+                                "top": 77,
+                                "bottom": 70
+                            },
+                            {
+                                "value": 8,
+                                "top": 85,
+                                "bottom": 77
+                            },
+                            {
+                                "value": 1,
+                                "top": 86,
+                                "bottom": 85
+                            },
+                            {
+                                "value": 28,
+                                "top": 114,
+                                "bottom": 86
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "lastedited": "2025-07-26T14:42:00.000Z",
+    "creationdate": "2025-07-26T14:42:00.000Z"
+}

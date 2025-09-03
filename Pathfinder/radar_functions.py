@@ -13,7 +13,7 @@ del sys.modules['attach_grounddata']
 from attach_grounddata import *
 
 
-def load_campaign_config(file_path="./campaigns.yaml"):
+def load_campaign_config(file_path="./campaigns_subset.yaml"):
     with open(file_path, "r") as f:
         config = yaml.safe_load(f)
     return config
