@@ -92,6 +92,13 @@ from matplotlib.widgets import Button, RadioButtons, CheckButtons
 from matplotlib.patches import Circle, Rectangle
 
 
+class rdr():
+    def __init__(self):
+        self.rx = None
+        self.fasttime = None
+        self.range_air = None
+        self.slowtime = None
+
 #TODO: create a data delivery function (to .nc)
 def make_nc_file(RADAR):
     """

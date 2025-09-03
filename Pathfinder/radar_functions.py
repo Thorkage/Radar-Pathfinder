@@ -14,10 +14,16 @@ from attach_grounddata import *
 
 
 def load_campaign_config(file_path="./campaigns_subset.yaml"):
+    """
+    
+    """
     with open(file_path, "r") as f:
         config = yaml.safe_load(f)
     return config
 
+
+        
+        
 def load_RADAR(radar_type='', #UWiBaSS
                    datasetID='',
                    campaignID='',
