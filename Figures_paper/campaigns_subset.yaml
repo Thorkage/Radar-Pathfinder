@@ -1,0 +1,11 @@
+master_path: /Volumes/PortableSSD/SnowDrone
+
+campaigns:
+  2024_SIOS:
+    field_notes: None
+    uwibass_paths:
+      - UWiBaSS/26_04_2024_5/
+    magnaprobe_paths:
+      - Magnaprobe/2024_SIOS/2024_04_25-01.nc
+      - Magnaprobe/2024_SIOS/2024_04_25-02.nc
+    snowprofile_path: Snowprofiles/2024_SIOS/
