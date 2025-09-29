@@ -107,7 +107,6 @@ def make_nc_file(RADAR):
     return RADAR
 
 
-
 def find_nearest_idx(array, value):
     """
     Finds the index of the element in the input array that is closest to the specified value.

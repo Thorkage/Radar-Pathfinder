@@ -1,5 +1,29 @@
 from helper_functions import *
 
+
+def _find_start_row(path):
+    """
+    Helper function to find the start row of the data within a Magnaprobe .dat file.
+    It is needed because the file format changed. Earlier rows 2,3 were units, later these were removed.
+    """
+    with open(path, 'r') as file:
+        for i, line in enumerate(file):
+            cols = line.split(',')
+            if cols[1].isdigit():                
+                break
+        head_ind = _find_header(path)
+        return range(head_ind+1, i)
+           
+
+def _find_header(path):
+    """
+    Helper function to find the header row of the data within a Magnaprobe .dat file.
+    """
+    with open(path, 'r') as file:
+        for i, line in enumerate(file):
+            if line.startswith('"TIMESTAMP"'):
+                return i
+            
 def _MP_loader(path, campaignID):
     """
     Magnaprobe file loader which can load from different filetypes:
@@ -22,7 +46,8 @@ def _MP_loader(path, campaignID):
     filetype = path.split('.')[-1]
 
     if filetype == 'dat':
-        data = pd.read_table(path, sep=',', header=1, skiprows=(2,3))
+        data = pd.read_table(path, sep=',', header=_find_header(path), skiprows=_find_start_row(path))
+
         if data.LatitudeDDDDD[0]<1:
             insitu_depth = np.copy(data.DepthCm) #+80
             insitu_lat = np.copy(data.latitude_a + data.LatitudeDDDDD)
@@ -32,7 +57,7 @@ def _MP_loader(path, campaignID):
             insitu_lat = np.copy(data.LatitudeDDDDD)
             insitu_lon = np.copy(data.LongitudeDDDDD)
             
-        # The 2019 SIOS campaign has some unique corrections (simply copied from RODJ): 
+        # The 2019 SIOS campaign has some unique corrections (copied from RODJ): 
         if campaignID == '2019_SIOS':
             # datapoints which used the 80 cm extension:
             add80sections = np.array( [(464, 561), (972, 1176)], dtype = int)

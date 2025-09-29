@@ -59,12 +59,14 @@ def populate_datafields(RADAR,
     RADAR.has_flightstate = has_flightstate
     RADAR.has_geolocation = has_geolocation
     RADAR.add_insitu_data = add_insitu_data
+    RADAR.check_dataflashlog = check_dataflashlog
+    
+    RADAR = _add_RPCA(RADAR, RPCA_lambda, force_RPCA=force_RPCA)
     
     if RADAR.radar_type == 'UWiBaSS' and has_flightstate and has_geolocation:
         RADAR = _check_auxilliary(RADAR, check_dataflashlog)
     
     RADAR.PF_parameters = PF_parameters
-    RADAR = _add_RPCA(RADAR, RPCA_lambda, force_RPCA=force_RPCA)
 
     if has_geolocation:
         RADAR, UTM_transformer, _ = _add_UTM(RADAR)
@@ -175,6 +177,7 @@ def _add_RPCA(RADAR,
                     max_iter=100,
                     verbose=False
             )
+            RADAR.rx_rpca = S.copy()
         elif 'rx' in RADAR.__dict__:
             _, S = rpca_pcp_ialm(
                     RADAR.rx,
@@ -182,8 +185,25 @@ def _add_RPCA(RADAR,
                     max_iter=100,
                     verbose=False
             )
-        RADAR.rx_rpca = S.copy()
-        
+            RADAR.rx_rpca = S.copy()
+            
+        # if 'rx1' in RADAR.__dict__ and 'rx2' in RADAR.__dict__:
+            # _, S = rpca_pcp_ialm(
+            #         RADAR.rx1,
+            #         sparsity_factor= RPCA_lambda / np.sqrt(max(RADAR.rx1.shape)),
+            #         max_iter=100,
+            #         verbose=True
+            # )
+            # RADAR.rx_rpca = RADAR.rx1.copy()
+
+            # _, S = rpca_pcp_ialm(
+            #         RADAR.rx2,
+            #         sparsity_factor= RPCA_lambda / np.sqrt(max(RADAR.rx2.shape)),
+            #         max_iter=100,
+            #         verbose=False
+            # )
+            # RADAR.rx2_rpca = S.copy()
+
         with open(RADAR.full_path, 'wb') as outp:
             pickle.dump(RADAR, outp, pickle.HIGHEST_PROTOCOL)        
     return RADAR
