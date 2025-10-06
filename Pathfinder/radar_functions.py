@@ -2,7 +2,7 @@ from helper_functions import *
 from add_dataflashlog import *
 from attach_grounddata import *
 
-def load_campaign_config(file_path="./campaigns_subset.yaml"):
+def load_campaign_config(file_path="./campaigns.yaml"):
     """
     
     """
