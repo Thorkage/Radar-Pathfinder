@@ -2,7 +2,7 @@ from helper_functions import *
 from add_dataflashlog import *
 from attach_grounddata import *
 
-def load_campaign_config(file_path="./campaigns.yaml"):
+def load_campaign_config(file_path):
     """
     
     """
@@ -14,13 +14,14 @@ def load_campaign_config(file_path="./campaigns.yaml"):
 def load_RADAR(radar_type='', #UWiBaSS
                    datasetID='',
                    campaignID='',
-                   path=''
+                   path='',
+                   yaml_file="./campaigns.yaml"
                    ):
     """
     
     """
     
-    config = load_campaign_config()   
+    config = load_campaign_config(yaml_file)   
     
     if radar_type == 'UWiBaSS':
         full_path = os.path.join(config['master_path'], 'UWiBaSS', datasetID , 'uwibass_object.pkl')
