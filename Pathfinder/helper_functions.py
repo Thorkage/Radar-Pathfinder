@@ -100,6 +100,7 @@ class rdr():
         self.slowtime = None
 
 #TODO: create a data delivery function (to .nc)
+#! currently implemented in a separate notebook (Notebooks/make_export_netCDF.ipynb)
 def make_nc_file(RADAR):
     """
     
