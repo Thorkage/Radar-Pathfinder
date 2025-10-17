@@ -80,7 +80,7 @@ def populate_datafields(RADAR,
         RADAR.target_type = 'unknown'
         
     if add_insitu_data and has_geolocation:
-        RADAR, df_MP, df_SP, dict_SP = _add_insitu(RADAR, UTM_transformer)
+        RADAR, df_MP, df_SP, dict_SP = add_insitu(RADAR, UTM_transformer)
         return RADAR, df_MP, df_SP, dict_SP
     
     else:
@@ -218,7 +218,7 @@ def _add_radar_footprints(RADAR):
     return RADAR
  
  
-def _add_insitu(RADAR, transformer):
+def add_insitu(RADAR, transformer):
     """
     Add in-situ measurements to the RADAR object.
     """

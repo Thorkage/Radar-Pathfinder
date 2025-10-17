@@ -32,7 +32,8 @@ from scipy.stats import linregress
 import scipy.fftpack
 from scipy.spatial.transform import Rotation as R
 from scipy.spatial import cKDTree
-from scipy.interpolate import griddata
+from scipy.interpolate import griddata, interp1d
+
 from scipy.signal import argrelextrema
 from scipy.signal import find_peaks, peak_prominences
 from skimage.measure import regionprops, label
@@ -74,7 +75,7 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 from matplotlib.patches import ConnectionPatch
 import matplotlib.gridspec as gridspec
-from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.colors import LinearSegmentedColormap, Normalize, TwoSlopeNorm
 
 from mpl_toolkits.mplot3d import Axes3D
 mpl.rcParams['axes3d.mouserotationstyle'] = 'azel'  
