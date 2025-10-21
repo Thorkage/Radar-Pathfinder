@@ -74,7 +74,7 @@ def populate_datafields(RADAR,
         RADAR = _add_target_type(RADAR)
 
         if has_flightstate:
-            RADAR = _add_radar_footprints(RADAR)
+            RADAR = add_radar_footprints(RADAR)
             
     else:
         RADAR.target_type = 'unknown'
@@ -211,7 +211,7 @@ def _add_RPCA(RADAR,
  
  
 # TODO: Allow for fixed radius footprint if HPBW is unknown
-def _add_radar_footprints(RADAR):
+def add_radar_footprints(RADAR):
     """
     """
     RADAR.footprints, origins = calculate_radar_footprints(RADAR)

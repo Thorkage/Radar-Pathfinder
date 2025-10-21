@@ -209,9 +209,9 @@ def _SP_full_loader(RADAR, path, files, transformer):
             tops.sort()
             
             #? this should handle that case
-            # if len(bottoms) > len(bottoms_density) + 1:
-            #     bottoms = bottoms_density
-            #     tops = tops_density
+            if len(bottoms) > len(bottoms_density) + 1:
+                bottoms = bottoms_density
+                tops = tops_density
 
             layers = []
             for i in range(len(bottoms)):
