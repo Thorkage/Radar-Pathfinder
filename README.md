@@ -55,4 +55,4 @@ Pfaffling, Andreas. Ground Penetrating Radar Snow Thickness Profiling during WWO
 
 Pfaffhuber, Andreas A., Jan L. Lieser, and Christian Haas. “Snow Thickness Profiling on Antarctic Sea Ice with GPR—Rapid and Accurate Measurements with the Potential to Upscale Needles to a Haystack.” Geophysical Research Letters 44, no. 15 (2017): 7836–44. https://doi.org/10.1002/2017GL074202.
 
-### You have a similar system and are looking for a solid interface detection method? Try Pathfinder! Also, reach out so that we can discuss its suitability.
+### You have a similar system and are looking for a solid interface detection method? Try Pathfinder! Also, reach out so that we can discuss its suitability.# Radar-Pathfinder
