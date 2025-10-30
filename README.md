@@ -5,7 +5,7 @@
 
 ![pathfinder_demo](./pathfinder_demo_plot.png)
 
-*Pathfinder* is presented in detail in the *Pathfinder_paper.pdf*-file (which is an internship report for my university, therefore pretty bloated towards background/relevance etc.) -- a more sophisticated publication is aimed for towards the end of 2025. To get started with using Pathfinder, have a look at the *running_Pathfinder.ipynb* notebook. All relevant information should be either there or in the pdf. If any questions arise: Let me know.
+*Pathfinder* is presented in detail in a publication in prep which is aimed for submission towards the end of 2025. To get started with using Pathfinder, have a look at the *running_Pathfinder.ipynb* and *make_RADAR.ipynb* notebooks. All relevant information should be there If any questions arise: Let me know.
 
 ### Running it on your own GPR or radar data 
 *Pathfinder* can be run on any 2D array and has been tested on various snow-measuring systems (also non-UAV-mounted)! Have a look at the *make_RADAR.ipynb* notebook to learn how to convert your data into something that *Pathfinder* can read.
