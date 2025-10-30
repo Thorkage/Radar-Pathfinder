@@ -350,7 +350,7 @@ def eps_r_uncertainty_ulaby(bulk_density, bulk_density_unc):
     derivative = 3 * factor**2 * 0.51 / 1000
     return abs(derivative) * bulk_density_unc
 
-def _construct_radar_footprint(
+def construct_radar_footprint(
     altitude,
     utm_x,
     utm_y,
@@ -407,7 +407,7 @@ def calculate_radar_footprints(RADAR):
     footprints = []
     origins = []
     for i in range(RADAR.rx_rpca.shape[1]):
-        footprint_poly, origin = _construct_radar_footprint(
+        footprint_poly, origin = construct_radar_footprint(
                                     altitude=RADAR.CTUN_SAlt_filtered[i],
                                     utm_x=RADAR.UTM_x[i],
                                     utm_y=RADAR.UTM_y[i],

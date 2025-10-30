@@ -39,17 +39,17 @@ def find_dataflashlog(UWIBASS):
             
             
             
-def load_dataflashlog(uwibass):
+def load_dataflashlog(UWIBASS):
     """
     Load the processed dataflashlog for the given UWiBaSS object.
     """
-    df = pd.read_csv(uwibass.dataflashlog_path,
+    df = pd.read_csv(UWIBASS.dataflashlog_path,
                      parse_dates=['timestamp'])
     return df
 
 
 
-def attach_dataflashlog(uwibass, df_dataflashlog, columns):
+def attach_dataflashlog(UWIBASS, df_dataflashlog, columns):
     """
     For each datetime_timestamp in uwibass, find the nearest timestamp in df_dataflashlog,
     and extract the specified columns. The extracted columns are added to the uwibass object.
@@ -71,7 +71,7 @@ def attach_dataflashlog(uwibass, df_dataflashlog, columns):
 
     # Create a DataFrame with these new timestamps, fill other columns with NaN
 
-    df_extra = pd.DataFrame({'timestamp':  uwibass.datetime_timestamp})
+    df_extra = pd.DataFrame({'timestamp':  UWIBASS.datetime_timestamp})
     # print(len(df_extra))
     # Add all columns from df_dataflash except 'timestamp', filled with NaN
     for col in df_dataflashlog.columns:
@@ -97,9 +97,9 @@ def attach_dataflashlog(uwibass, df_dataflashlog, columns):
 
     for col in columns:
         col_name = col.replace('.', '_')
-        setattr(uwibass, col_name, merged[col].values)
+        setattr(UWIBASS, col_name, merged[col].values)
         
-    return uwibass
+    return UWIBASS
 
 
 
