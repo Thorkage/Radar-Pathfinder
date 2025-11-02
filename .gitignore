@@ -1,2 +1,12 @@
 /.DS_Store
+/Data/.DS_Store
+/Data/SnowDrone/.DS_Store
+/Data/SnowDrone/UWiBaSS/.DS_Store
+/Figures_Pathfinder_paper/.DS_Store
+/Figures_Pathfinder_paper/export/.DS_Store
+
+/Notebooks/.DS_Store
+/Pathfinder/.DS_Store
+/otherCode/.DS_Store
 .vscode
+/Pathfinder/__pycache__/*

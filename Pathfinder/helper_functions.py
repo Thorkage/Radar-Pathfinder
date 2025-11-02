@@ -5,7 +5,7 @@ from numpy.core.fromnumeric import shape
 import glob
 import os
 import pickle
-# from uwibasspp import rdr
+from uwibasspp import rdr
 import copy
 import warnings
 from numba import njit, prange
@@ -87,18 +87,18 @@ font_manager.fontManager.addfont(font_path)
 prop = font_manager.FontProperties(fname=font_path)
 plt.rcParams['font.family'] = 'sans-serif'
 plt.rcParams['font.sans-serif'] = prop.get_name()
-plt.rcParams["mathtext.fontset"] = 'cm'
+# plt.rcParams["mathtext.fontset"] = 'cm'
 
 from matplotlib.widgets import Button, RadioButtons, CheckButtons
 from matplotlib.patches import Circle, Rectangle
 
 
-class rdr():
-    def __init__(self):
-        self.rx = None
-        self.fasttime = None
-        self.range_air = None
-        self.slowtime = None
+# class rdr():
+#     def __init__(self):
+#         self.rx = None
+#         self.fasttime = None
+#         self.range_air = None
+#         self.slowtime = None
 
 #TODO: create a data delivery function (to .nc)
 #! currently implemented in a separate notebook (Notebooks/make_export_netCDF.ipynb)

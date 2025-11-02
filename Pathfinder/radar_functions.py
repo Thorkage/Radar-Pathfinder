@@ -15,7 +15,8 @@ def load_RADAR(radar_type='', #UWiBaSS
                    datasetID='',
                    campaignID='',
                    path='',
-                   yaml_file="./campaigns.yaml"
+                   yaml_file="./campaigns.yaml",
+                   from_scratch=False
                    ):
     """
     
@@ -27,18 +28,61 @@ def load_RADAR(radar_type='', #UWiBaSS
         full_path = os.path.join(config['master_path'], 'UWiBaSS', datasetID , 'uwibass_object.pkl')
     else:
         full_path = path
-        
-    with open(full_path, 'rb') as inp:
-        RADAR = pickle.load(inp)
-        
-    RADAR.radar_type = radar_type
-    RADAR.datasetID = datasetID
-    RADAR.campaignID = campaignID
-    RADAR.data_path = config['master_path']
-    RADAR.config_paths = config
-    RADAR.full_path = full_path
     
-    print(f'Dataset {RADAR.datasetID} from campaign {RADAR.campaignID} is loaded from {full_path}')
+    
+    if from_scratch:
+        rx1 = pd.read_csv(os.path.join(config['master_path'], 'UWiBaSS', datasetID , 'RX1.txt'), delimiter=',', usecols=range(511)).T
+        rx1 = np.nan_to_num(np.array(rx1)) 
+        
+        rx2 = pd.read_csv(os.path.join(config['master_path'], 'UWiBaSS', datasetID , 'RX2.txt'), delimiter=',', usecols=range(511)).T
+        rx2 = np.nan_to_num(np.array(rx2)) 
+        
+        rx1_raw = np.roll(rx1.T,-218).T 
+        rx2_raw = np.roll(rx2.T,-218).T 
+
+        timestamp = np.loadtxt(os.path.join(config['master_path'], 'UWiBaSS', datasetID , 'time.txt'))
+        slowtime = timestamp - timestamp[0]
+        fasttime = pd.read_csv(os.path.join(config['master_path'], 'UWiBaSS', 'timebaseOEM.txt'), delimiter=',')
+        fasttime = np.float64(np.array(fasttime.columns))
+        range_air=0.299792458*fasttime*100/2
+        
+        RADAR = rdr()
+        RADAR.radar_type = radar_type
+        RADAR.datasetID = datasetID
+        RADAR.campaignID = campaignID
+        RADAR.data_path = config['master_path']
+        RADAR.config_paths = config
+        RADAR.full_path = full_path
+        RADAR.rx1 = rx1
+        RADAR.rx2 = rx2
+        if np.max(np.abs(rx1))>np.max(np.abs(rx2)):
+            RADAR.rx_raw = rx1_raw
+            print('active channel: rx1')
+        else:
+            RADAR.rx_raw = rx2_raw
+            print('active channel: rx2')
+        RADAR.fasttime = fasttime
+        RADAR.slowtime = slowtime
+        RADAR.timestamp = timestamp
+        RADAR.range_air = range_air
+        
+        with open(RADAR.full_path, 'wb') as outp:
+            pickle.dump(RADAR, outp, pickle.HIGHEST_PROTOCOL) 
+        
+        print(f'Dataset {RADAR.datasetID} from campaign {RADAR.campaignID} constructed')
+        
+    else:
+        with open(full_path, 'rb') as inp:
+            RADAR = pickle.load(inp)
+            
+        RADAR.radar_type = radar_type
+        RADAR.datasetID = datasetID
+        RADAR.campaignID = campaignID
+        RADAR.data_path = config['master_path']
+        RADAR.config_paths = config
+        RADAR.full_path = full_path
+        
+        print(f'Dataset {RADAR.datasetID} from campaign {RADAR.campaignID} is loaded from {full_path}')
 
     return RADAR
 
@@ -122,7 +166,7 @@ def _check_dataflashlog(RADAR):
     dataflashlog_variables = [
         'GPS.Lat', 'GPS.Lng', 'GPS.Status', 'GPS.Alt',
         'CTUN.Alt', 'CTUN.SAlt', 'POS.Alt', 'BARO.Alt',
-        'UTM_x', 'UTM_y', 
+        'UTM_x', 'UTM_y', 'pitch', 'roll', 'yaw'
     ]
     RADAR, dataflashlog_file = find_dataflashlog(RADAR)
     RADAR = attach_dataflashlog(RADAR, load_dataflashlog(RADAR),
