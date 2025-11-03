@@ -345,34 +345,42 @@ def colocate_MP_and_SP_to_RADAR(RADAR,
     RADAR.SP_bulk_eps_r = np.array(all_eps_r)
     RADAR.SP_bulk_eps_r_uncertainty = np.array(all_eps_r_uncertainty)
 
-
     #(2): Co-locate MP data to radar footprints:
     gdf_poly = gpd.GeoDataFrame({'geometry': RADAR.footprints},
                                 geometry='geometry'
                                 )
-    
-    gdf_poly = gdf_poly.reset_index().rename(columns={'index': 'poly_id'})  # <-- explicit ID
+    gdf_poly = gdf_poly.reset_index(drop=True)            # ensure simple 0..N-1 index
+    gdf_poly['poly_id'] = gdf_poly.index                  # explicit poly id column
 
+    # keep original df_MP index so we can report which rows were used per polygon
     gdf_points = gpd.GeoDataFrame(
-        df_MP.copy(),
+        df_MP.copy().reset_index().rename(columns={'index': 'orig_index'}),
         geometry=gpd.points_from_xy(df_MP['UTM_x'], df_MP['UTM_y']),
         crs=gdf_poly.crs
         )
-    
-    joined = gpd.sjoin(gdf_points, gdf_poly.reset_index(drop=False), how='inner', predicate='within')
-    
+
+    joined = gpd.sjoin(gdf_points, gdf_poly, how='inner', predicate='within')
+
     stats = joined.groupby('poly_id').agg(
         n_MP_points=('snow_depth', 'size'),
         mean_snow_depth=('snow_depth', 'mean')
     )
+
+    # list of original df_MP indices per polygon
+    indices_series = joined.groupby('poly_id')['orig_index'].apply(lambda x: x.tolist())
+
+    # reindex to full polygon index and fill missing polygons
     stats_full = stats.reindex(gdf_poly.index)
     stats_full['n_MP_points'] = stats_full['n_MP_points'].fillna(0)
-    
+    stats_full['mean_snow_depth'] = stats_full['mean_snow_depth'].fillna(np.nan)
+
+    mp_indices_full = [indices_series.get(i, []) for i in gdf_poly['poly_id']]
+
     RADAR.MP_snow_depth = stats_full['mean_snow_depth'].values
     RADAR.MP_N_points = stats_full['n_MP_points'].values
-    
-    
-    dzs = RADAR.range_air[1] / np.sqrt(RADAR.SP_bulk_eps_r) / 100   
+    RADAR.MP_indices = mp_indices_full  # list of lists of df_MP indices used for each footprint
+
+    dzs = RADAR.range_air[1] / np.sqrt(RADAR.SP_bulk_eps_r) / 100
     RADAR.MP_snow_depth_in_range_bins = np.round(RADAR.MP_snow_depth / dzs).astype(int)
     
     return RADAR, df_SP, dict_SP
@@ -547,70 +555,6 @@ def monte_carlo_eps_r(
             float(np.mean(eps_r_samples)),
             float(np.std(eps_r_samples, ddof=1)))
 
-
-
-# def monte_carlo_eps_r(thicknesses, densities, pertubation=0.3, N=20000):
-#     di = thicknesses
-#     rho_i = densities
-#     di_std = pertubation * di
-#     di_samples = np.random.normal(loc=di, scale=di_std, size=(N, di.size))
-#     rho_bulk_samples = np.sum(di_samples * rho_i, axis=1) / np.sum(di_samples, axis=1)
-#     eta_s_samples = eps_r_ulaby(rho_bulk_samples)
-
-#     return np.mean(rho_bulk_samples), np.std(rho_bulk_samples), np.mean(eta_s_samples), np.std(eta_s_samples)
-
-
-# def read_snowprofiles_meta(path, files, transformer):
-#     """
-    
-    
-#     """
-#     df = pd.DataFrame({
-#             'filename': files,
-#             'lat': [None] * len(files),
-#             'lon': [None] * len(files),
-#             'UTM_x': [None] * len(files),
-#             'UTM_y': [None] * len(files),
-#             'time': [None] * len(files),
-#             'bulk_density': [None] * len(files),
-#             'bulk_density_unc' : [None] * len(files),
-#             'eps_r': [None] * len(files),
-#             'eps_r_unc': [None] * len(files)
-            
-#         })
-
-#     for f in files:
-#         with open(os.path.join(path, f)) as json_file:
-#             data = json.load(json_file)
-
-#         lat = data['position']['latitude']
-#         lon = data['position']['longitude']
-#         time = data['profiles'][0]['date']
-        
-#         if 'density' in data['profiles'][0].keys():
-#             thicknesses = []
-#             densities = []
-
-#             for i in range(len(data['profiles'][0]['density']['elements'][0]['layers'])):
-#                 thicknesses.append(data['profiles'][0]['density']['elements'][0]['layers'][i]['top'] - data['profiles'][0]['density']['elements'][0]['layers'][i]['bottom'])
-#                 densities.append(data['profiles'][0]['density']['elements'][0]['layers'][i]['value'])
-                
-#             densities = np.array(densities)
-#             thicknesses = np.array(thicknesses)
-        
-#             bulk_density, bulk_density_unc, eps_r, eps_r_unc = monte_carlo_eps_r(thicknesses, densities,  thickness_rel_sigma=0.3, density_rel_sigma=0.08, N=20000)
-            
-#             df.loc[df['filename'] == f, 'bulk_density'] = bulk_density
-#             df.loc[df['filename'] == f, 'bulk_density_unc'] = bulk_density_unc
-#             df.loc[df['filename'] == f, 'eps_r'] = eps_r
-#             df.loc[df['filename'] == f, 'eps_r_unc'] = eps_r_unc
-
-#             df.loc[df['filename'] == f, 'UTM_x'], df.loc[df['filename'] == f, 'UTM_y'] = transformer.transform(lon, lat)
-#             df.loc[df['filename'] == f, 'lat'] = lat
-#             df.loc[df['filename'] == f, 'lon'] = lon
-#             df.loc[df['filename'] == f, 'time'] = pd.to_datetime(time)
-                
-#     return df.dropna().reset_index(drop=True)
 
 
 def plot_MP_validation(uwibass, ax, mode='snow_depth_best'):

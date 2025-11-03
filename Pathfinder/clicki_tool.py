@@ -330,8 +330,8 @@ class LayerCorrectionTool:
 
     
     def add_var_panel(self):
-        self.var1.set_data(range(len(self.RADAR.roll)), self.RADAR.roll)
-        self.var2.set_data(range(len(self.RADAR.pitch)), self.RADAR.compensated_pitch if hasattr(self.RADAR, 'compensated_pitch') else self.RADAR.pitch)
+        self.var1.set_data(range(len(self.RADAR.ATT_Roll)), self.RADAR.ATT_Roll)
+        self.var2.set_data(range(len(self.RADAR.ATT_Pitch)), self.RADAR.compensated_pitch if hasattr(self.RADAR, 'compensated_pitch') else self.RADAR.ATT_Pitch)
         self.var3.set_data(range(len(self.RADAR.altitude_mask)), self.RADAR.altitude_mask)
         self.var1.set_label('Roll')
         self.var2.set_label('Compensated Pitch' if hasattr(self.RADAR, 'compensated_pitch') else 'Pitch')

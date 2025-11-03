@@ -26,6 +26,7 @@ def load_RADAR(radar_type='', #UWiBaSS
     
     if radar_type == 'UWiBaSS':
         full_path = os.path.join(config['master_path'], 'UWiBaSS', datasetID , 'uwibass_object.pkl')
+        
     else:
         full_path = path
     
@@ -40,14 +41,16 @@ def load_RADAR(radar_type='', #UWiBaSS
         rx1_raw = np.roll(rx1.T,-218).T 
         rx2_raw = np.roll(rx2.T,-218).T 
 
-        timestamp = np.loadtxt(os.path.join(config['master_path'], 'UWiBaSS', datasetID , 'time.txt'))
+        timestamp = np.loadtxt(os.path.join(config['master_path'], 'UWiBaSS', datasetID , 'time.txt'))[:-1]
         slowtime = timestamp - timestamp[0]
+        
         fasttime = pd.read_csv(os.path.join(config['master_path'], 'UWiBaSS', 'timebaseOEM.txt'), delimiter=',')
         fasttime = np.float64(np.array(fasttime.columns))
         range_air=0.299792458*fasttime*100/2
         
         RADAR = rdr()
         RADAR.radar_type = radar_type
+        RADAR.bandwidth = 3.8e9  # UWiBaSS bandwidth in Hz
         RADAR.datasetID = datasetID
         RADAR.campaignID = campaignID
         RADAR.data_path = config['master_path']
@@ -62,9 +65,12 @@ def load_RADAR(radar_type='', #UWiBaSS
             RADAR.rx_raw = rx2_raw
             print('active channel: rx2')
         RADAR.fasttime = fasttime
+        RADAR.dft = fasttime[1] - fasttime[0] 
+        RADAR.range_air = range_air
+        
         RADAR.slowtime = slowtime
         RADAR.timestamp = timestamp
-        RADAR.range_air = range_air
+        
         
         with open(RADAR.full_path, 'wb') as outp:
             pickle.dump(RADAR, outp, pickle.HIGHEST_PROTOCOL) 
@@ -76,6 +82,9 @@ def load_RADAR(radar_type='', #UWiBaSS
             RADAR = pickle.load(inp)
             
         RADAR.radar_type = radar_type
+        # RADAR.bandwidth = 3.8e9  # UWiBaSS bandwidth in Hz
+        # RADAR.dft = fasttime[1] - fasttime[0]
+        
         RADAR.datasetID = datasetID
         RADAR.campaignID = campaignID
         RADAR.data_path = config['master_path']
@@ -145,7 +154,7 @@ def _check_auxilliary(RADAR, check_dataflashlog):
     if check_dataflashlog:
         RADAR = _check_dataflashlog(RADAR)
 
-    RADAR.compensated_pitch = RADAR.pitch + 6
+    RADAR.compensated_pitch = RADAR.ATT_Pitch + 6
     RADAR.CTUN_SAlt_filtered = remove_altitude_outliers(RADAR.CTUN_SAlt, diff_threshold=.25)
     
     if 'target_type' in RADAR.__dict__:
@@ -166,11 +175,12 @@ def _check_dataflashlog(RADAR):
     dataflashlog_variables = [
         'GPS.Lat', 'GPS.Lng', 'GPS.Status', 'GPS.Alt',
         'CTUN.Alt', 'CTUN.SAlt', 'POS.Alt', 'BARO.Alt',
-        'UTM_x', 'UTM_y', 'pitch', 'roll', 'yaw'
+        'UTM_x', 'UTM_y', 'ATT.Pitch', 'ATT.Roll', 'ATT.Yaw'
     ]
     RADAR, dataflashlog_file = find_dataflashlog(RADAR)
     RADAR = attach_dataflashlog(RADAR, load_dataflashlog(RADAR),
                                 dataflashlog_variables)
+    print(RADAR.__dict__.keys())
     return RADAR
 
 
@@ -215,10 +225,10 @@ def _add_RPCA(RADAR,
     if ('rx_rpca' not in RADAR.__dict__) or force_RPCA == True:
         print('Computing RPCA of radar data...')
         
-        if 'rxraw' in RADAR.__dict__:
+        if 'rxraw' in RADAR.__dict__ or 'rx_raw' in RADAR.__dict__:
             _, S = rpca_pcp_ialm(
-                    RADAR.rxraw,
-                    sparsity_factor= RPCA_lambda / np.sqrt(max(RADAR.rxraw.shape)), 
+                    RADAR.rxraw if 'rxraw' in RADAR.__dict__ else RADAR.rx_raw,
+                    sparsity_factor= RPCA_lambda / np.sqrt(max(RADAR.rxraw.shape if 'rxraw' in RADAR.__dict__ else RADAR.rx_raw.shape)), 
                     max_iter=100,
                     verbose=False
             )
@@ -455,7 +465,7 @@ def calculate_radar_footprints(RADAR):
                                     altitude=RADAR.CTUN_SAlt_filtered[i],
                                     utm_x=RADAR.UTM_x[i],
                                     utm_y=RADAR.UTM_y[i],
-                                    yaw=RADAR.yaw[i],
+                                    yaw=RADAR.ATT_Yaw[i],
                                     pitch=RADAR.compensated_pitch[i],
                                     # roll=uwibass.roll[i],
                                     roll=0,  # ! Assuming roll is not used (compensated for by the SnowDrone) --> set to zero
